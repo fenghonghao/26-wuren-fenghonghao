@@ -1,17 +1,16 @@
 #!/usr/bin/env python
 import rospy
-from geometry_msgs.msg import Twist
-
+from hwpkg.msg import turtlespeed
 def talker():
-    pub = rospy.Publisher('turtle1/cmd_vel', Twist, queue_size=10)
+    pub = rospy.Publisher('pubspeed/turtlespeed', turtlespeed, queue_size=10)
     rospy.init_node('pubspeed', anonymous=True)
-    # rate = rospy.Rate(10) # 10hz
-    # while not rospy.is_shutdown():
-    turtle_speed = Twist()
-    turtle_speed.linear.x = 1.0
-    rospy.loginfo(turtle_speed)
-    pub.publish(turtle_speed)
-        # rate.sleep()
+    rate = rospy.Rate(10) # 10hz
+    while not rospy.is_shutdown():
+        turtle_speed = turtlespeed()
+        turtle_speed.vel = 1.0
+        rospy.loginfo(turtle_speed)
+        pub.publish(turtle_speed)
+        rate.sleep()
 
 if __name__ == '__main__':
     try:
