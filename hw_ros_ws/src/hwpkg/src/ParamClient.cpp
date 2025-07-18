@@ -1,7 +1,9 @@
 #include "ros/ros.h"
 #include "geometry_msgs/Twist.h"
 #include "std_srvs/Empty.h"
+#include "hwpkg/turtlespeed.h"
 #include <map>
+
 int main(int argc, char *argv[])
 {
 
@@ -17,7 +19,6 @@ int main(int argc, char *argv[])
     // 4.组织被发布的消息，编写发布逻辑并发布消息
     std::map<std::string, int> color;
     nh.getParam("/myturtle/Color", color); // 可以传map进去获取参数
-    ROS_INFO("Map Size: %lld", color.size());
     for (const auto &pair : color)
     {
         ROS_INFO("Key:%s, Value:%d", pair.first.c_str(), pair.second);
@@ -26,7 +27,7 @@ int main(int argc, char *argv[])
     ros::ServiceClient clearClient = nh.serviceClient<std_srvs::Empty>("/clear");
     std_srvs::Empty srv;
     clearClient.call(srv);
-
+    
     geometry_msgs::Twist twist;
     nh.getParam("/myturtle/Twist/linear/x", twist.linear.x);
     nh.getParam("/myturtle/Twist/linear/y", twist.linear.y);
@@ -34,6 +35,11 @@ int main(int argc, char *argv[])
     nh.getParam("/myturtle/Twist/angular/x", twist.angular.x);
     nh.getParam("/myturtle/Twist/angular/y", twist.angular.y);
     nh.getParam("/myturtle/Twist/angular/z", twist.angular.z);
+    
+    ros::Subscriber velsub = nh.subscribe<hwpkg::turtlespeed>("/pubspeed/turtlespeed", 1000, [&](hwpkg::turtlespeedConstPtr msg){
+        ROS_INFO("Received turtle speed: %f", msg->vel);
+        twist.linear.x = msg->vel;
+    });
 
     // 5.设置循环频率
     ros::Rate rate(1);

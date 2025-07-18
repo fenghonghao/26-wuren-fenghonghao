@@ -1,1 +1,1 @@
-std_msgs/Float32 vel
+float32 vel
