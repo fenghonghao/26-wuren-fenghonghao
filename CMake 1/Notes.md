@@ -1,0 +1,4 @@
+有两个地方需要链接opencv库和头文件，math，m2
+m2用到的kalmanfilter用到opencv，math也有
+
+cmaketools项目大纲里面也可以看到依赖关系
