@@ -1,0 +1,14 @@
+myturtle:
+  Color:
+    background_r: 255
+    background_g: 255
+    background_b: 255
+  Twist:
+    linear: 
+      x: 1.0
+      y: 0.0
+      z: 0.0
+    angular: 
+      x: 0.0
+      y: 0.0
+      z: -2.0

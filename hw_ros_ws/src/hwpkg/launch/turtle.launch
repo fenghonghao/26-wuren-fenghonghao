@@ -1,0 +1,9 @@
+<launch>
+    <rosparam command="load" file="$(find hwpkg)/config/turtle.yaml"/>
+    
+    <node name="pubspeed" pkg="hwpkg" type="pubspeed.py" output="screen"/>
+    <node name="ParamClient" pkg="hwpkg" type="ParamClient" output="screen"/>
+    <node name="turtlesim" pkg="turtlesim" type="turtlesim_node" output="screen"/>
+    <node name="teleop_turtle" pkg="turtlesim" type="turtle_teleop_key" output="screen"/>
+
+</launch>
