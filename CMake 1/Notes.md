@@ -1,4 +1,10 @@
-有两个地方需要链接opencv库和头文件，math，m2
+主目录一个cmakelist，然后add两个subdirectory，common和modules；之后添加一个可执行文件，然后main依赖M1，M2，Math，添加进去
+
+common的math模块缺少cmakelists，补一个
+
+modules中先来一个CMakeListsaddsubdirectory，已经写好了，然后每个subdirectory一个cmakelists，将当前module添加为静态库
+
+有两个地方需要链接opencv库和头文件，math，m2；
 m2用到的kalmanfilter用到opencv，math也有
 
 cmaketools项目大纲里面也可以看到依赖关系
