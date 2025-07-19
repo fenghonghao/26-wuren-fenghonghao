@@ -1,0 +1,19 @@
+<robot name="blue_cone">
+    <link name="base_link">
+        <visual name="">
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <mesh filename="$(find conecounter)/meshes/blue.stl"/>
+            </geometry>
+            <material name="blue">
+                <color rgba="0.0 0.0 1.0 1.0"/>
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <cylinder radius="0.15" length="0.5"/>
+            </geometry>
+        </collision>
+    </link>    
+</robot>

@@ -5,5 +5,5 @@
     <node name="ParamClient" pkg="hwpkg" type="ParamClient" output="screen"/>
     <node name="turtlesim" pkg="turtlesim" type="turtlesim_node" output="screen"/>
     <node name="teleop_turtle" pkg="turtlesim" type="turtle_teleop_key" output="screen"/>
-
+    <!-- output有screen和log可选 -->
 </launch>

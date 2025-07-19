@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<launch>
+    <node type="rviz" name="rviz" pkg="rviz" args="-d $(find conecounter)/config/vis.rviz" />
+    <node name="Conect" pkg="conecounter" type="counter" output="screen"/>
+    <node name="fsd_bag_play" pkg="rosbag" type="play" 
+    args="$(find fsd_common_msgs)/bag/lidar_cone_side_and_slam_state.bag -l" output="screen"/>
+    
+</launch>
