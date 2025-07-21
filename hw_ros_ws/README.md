@@ -19,6 +19,18 @@ ParamClient.cpp 订阅turtlespeed，并发布geometry/Twist到turtle1/cmd_vel话
 roslaunch hwpkg turtle.launch
 ```
 
+小乌龟效果
+
+![](imgs/turtle.png)
+
+消息发布截图，其中/pubspeed/turtlespeed是自定义消息发布的话题
+
+![](imgs/topic.png)
+
+rqt_graph
+
+![](imgs/rqt.png)
+
 查看效果
 
 # 2. conecounter对应进阶作业
@@ -36,3 +48,5 @@ rosluanch conecounter counter.cpp
 ```
 
 查看效果
+
+![](imgs/rviz.png)

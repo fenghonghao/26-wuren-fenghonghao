@@ -23,7 +23,8 @@ int main(int argc, char *argv[])
     {
         ROS_INFO("Key:%s, Value:%d", pair.first.c_str(), pair.second);
     }
-    nh.setParam("/turtlesim", color);
+    nh.setParam("/turtlesim", color); // 把map传回去
+    // 设置好颜色之后调用turtlesim这个/clear服务就可以更新背景色了
     ros::ServiceClient clearClient = nh.serviceClient<std_srvs::Empty>("/clear");
     std_srvs::Empty srv;
     clearClient.call(srv);

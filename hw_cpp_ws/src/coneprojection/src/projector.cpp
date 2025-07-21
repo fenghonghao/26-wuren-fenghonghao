@@ -38,6 +38,7 @@ void Projector::callback(const fsd_common_msgs::ConeDetections::ConstPtr& msg)
             color = cv::Scalar(255, 0, 0);
             cntb++;
         }
+        // ROS_INFO("x_coordinate%f, y_coordinate%f", cone_coordinates_in_pixel(0), cone_coordinates_in_pixel(1));
         tools::circle(img, cv::Point(cone_coordinates_in_pixel(0), cone_coordinates_in_pixel(1)), 10, color, cv::FILLED);
     }
     ROS_INFO("All:%ld; Red:%d; Blue:%d", cones.size(), cntr, cntb);

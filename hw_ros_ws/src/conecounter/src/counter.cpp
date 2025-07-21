@@ -16,30 +16,40 @@ int main(int argc, char* argv[])
 {
     ros::init(argc, argv, "ConeCounter");
     ros::NodeHandle nh;
+    // marker的发布者
     ros::Publisher marker_pub = nh.advertise<visualization_msgs::MarkerArray>("/visualization_marker_array", 10);
-    ros::Subscriber posesub = nh.subscribe<fsd_common_msgs::CarState>("/estimation/slam/state", 10, [&](fsd_common_msgs::CarStateConstPtr msg){
-        const std_msgs::Header& header = msg->header;
-        const geometry_msgs::Pose2D& car_state = msg->car_state;
-        static tf::TransformBroadcaster br;
-        tf::Transform transform;
-        transform.setOrigin( tf::Vector3(car_state.x, car_state.y, 0.0) );
-        tf::Quaternion q;
-        q.setRPY(0, 0, car_state.theta);
-        transform.setRotation(q);
-        br.sendTransform(tf::StampedTransform(transform, header.stamp, header.frame_id, "rslidar"));
-        ROS_INFO("Car position: x=%.2f, y=%.2f", car_state.x, car_state.y);
-    });
-    ros::Subscriber conesub = nh.subscribe<fsd_common_msgs::ConeDetections>("/perception/lidar/cone_side", 10, [&](fsd_common_msgs::ConeDetectionsConstPtr msg){
+
+    // 打算估且把车子坐标看成ralidar坐标，但是坐标太大了，rviz把fixed_frame改成rslidar就行
+    // ros::Subscriber posesub = nh.subscribe<fsd_common_msgs::CarState>("/estimation/slam/state", 10, [&](fsd_common_msgs::CarStateConstPtr msg){
+    //     const std_msgs::Header& header = msg->header;
+    //     const geometry_msgs::Pose2D& car_state = msg->car_state;
+    //     static tf::TransformBroadcaster br;
+    //     tf::Transform transform;
+    //     transform.setOrigin( tf::Vector3(car_state.x, car_state.y, 0.0) );
+    //     tf::Quaternion q;
+    //     q.setRPY(0, 0, car_state.theta);
+    //     transform.setRotation(q);
+    //     br.sendTransform(tf::StampedTransform(transform, header.stamp, header.frame_id, "rslidar"));
+    //     ROS_INFO("Car position: x=%.2f, y=%.2f", car_state.x, car_state.y);
+    // });
+
+    // 订阅一下锥筒的话题
+    ros::Subscriber conesub = nh.subscribe<fsd_common_msgs::ConeDetections>("/perception/lidar/cone_side", 10, [&](const fsd_common_msgs::ConeDetectionsConstPtr msg){
         int cntb = 0, cntr = 0;
+        // []他是个vector
         const std::vector<fsd_common_msgs::Cone>& cones = msg->cone_detections;
         const std_msgs::Header& header = msg->header;
         visualization_msgs::MarkerArray marker_array;
+
+        // 每一帧之前全部把marker清掉
         visualization_msgs::Marker clear_marker;
         clear_marker.header = header;
         clear_marker.id = 0;
         clear_marker.ns = "Cone";
         clear_marker.action = visualization_msgs::Marker::DELETEALL;
         marker_array.markers.push_back(clear_marker);
+
+
         for(int i = 0; i < cones.size(); ++i)
         {
             const auto& cone = cones[i];
@@ -49,10 +59,12 @@ int main(int argc, char* argv[])
             marker.id = i + 1;
             marker.action = visualization_msgs::Marker::ADD;
             marker.pose.position = cone.position;
+            // 初始化四元数，否则rviz会报Warn
             marker.pose.orientation.x = 0;
             marker.pose.orientation.y = 0;
             marker.pose.orientation.z = 0;
             marker.pose.orientation.w = 1.0;
+            // 模型显示大小
             marker.scale.x = 0.5;
             marker.scale.y = 0.5;
             marker.scale.z = 0.5;
@@ -78,6 +90,7 @@ int main(int argc, char* argv[])
             }
             marker_array.markers.push_back(marker);
         }
+
         ROS_INFO("Header: seq=%u, frame_id=%s", header.seq, header.frame_id.c_str());
         ROS_INFO("All:%ld",cones.size());
         ROS_INFO("Blue:%d",cntb);
