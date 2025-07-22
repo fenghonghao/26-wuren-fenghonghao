@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<launch>
+
+    <node name="rosbagplay" pkg="rosbag" type="play" args="$(find fsd_common_msgs)/bag/carla_test.bag -l" output="screen"/>
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find pointcloud)/config/vis.rviz" output="screen"/>
+    <node name="pointcloud" pkg="pointcloud" type="pclvis_node" output="screen"/>
+
+</launch>

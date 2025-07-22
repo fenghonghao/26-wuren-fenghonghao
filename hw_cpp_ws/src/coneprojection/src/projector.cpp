@@ -1,10 +1,14 @@
 #include "projector.hpp"
 
+// 初始化类
 Projector::Projector(ros::NodeHandle& nh) : nh_(nh)
 {
     imgpub = nh_.advertise<sensor_msgs::Image>("/cone2img", 10);
+
+    // 订阅话题, 注意, 如果要绑定类的成员函数作为回调, 需要使用this指针！！！
     conesub = nh_.subscribe<fsd_common_msgs::ConeDetections>("/perception/fusion/cone_fusion", 10, &Projector::callback, this);
 
+    // 初始化内参和外参矩阵
     intrinsic_matrix << 532.795, 0.0, 632.15,
                         0.0, 532.72, -3.428,
                         0.0, 0.0, 1.0 ;
@@ -27,6 +31,7 @@ void Projector::callback(const fsd_common_msgs::ConeDetections::ConstPtr& msg)
         Eigen::Vector3d cone_coordinates_in_world(cone.position.x, cone.position.y, cone.position.z);
         Eigen::Vector3d cone_coordinates_in_pixel = intrinsic_matrix * (extrinsic_matrix * cone_coordinates_in_world.homogeneous());
         cone_coordinates_in_pixel /= cone_coordinates_in_pixel(2); // 归一化
+
         cv::Scalar color;
         if (cone.color.data == "r")
         {
@@ -38,9 +43,12 @@ void Projector::callback(const fsd_common_msgs::ConeDetections::ConstPtr& msg)
             color = cv::Scalar(255, 0, 0);
             cntb++;
         }
+
         // ROS_INFO("x_coordinate%f, y_coordinate%f", cone_coordinates_in_pixel(0), cone_coordinates_in_pixel(1));
         tools::circle(img, cv::Point(cone_coordinates_in_pixel(0), cone_coordinates_in_pixel(1)), 10, color, cv::FILLED);
     }
+    
+    // 打印信息
     ROS_INFO("All:%ld; Red:%d; Blue:%d", cones.size(), cntr, cntb);
     sensor_msgs::ImageConstPtr ros_img = cv_bridge::CvImage(header, "bgr8", img).toImageMsg();
     imgpub.publish(ros_img);
